@@ -22,6 +22,25 @@
         <i class="bx bxs-chevron-down"></i>
       </div>
     </div>
+
+    <div class="countries-list">
+      <div class="country" v-for="country in countriesList" :key="country.name">
+        <router-link
+          :to="{ name: 'CountryInfo', params: { id: country.name } }"
+          class="country-link"
+        >
+          <div class="country-poster">
+            <img :src="country.flag" :alt="country.name" />
+          </div>
+          <div class="country-details">
+            <h6>{{ country.name }}</h6>
+            <p><span>Population:</span> {{ country.population }}</p>
+            <p><span>Region:</span> {{ country.region }}</p>
+            <p><span>Capital:</span> {{ country.capital }}</p>
+          </div>
+        </router-link>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -32,7 +51,20 @@ export default {
   data() {
     return {
       country: "",
+      countriesList: null,
     };
+  },
+  mounted() {
+    fetch(`https://restcountries.eu/rest/v2/all`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        this.countriesList = data;
+        console.log(data);
+      });
   },
 };
 </script>
@@ -40,13 +72,14 @@ export default {
 <style lang="scss" scoped>
 .home {
   background: hsl(207, 26%, 17%);
-  padding: 30px 60px;
+  padding: 50px 60px 50px;
   transition: all 0.5s ease-in-out;
 
   .input-and-filter {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 50px;
 
     form {
       width: 400px;
@@ -159,7 +192,80 @@ export default {
   }
 
   @media screen and (max-width: 768px) {
+    padding: 30px 20px 50px;
+  }
+}
+
+.countries-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.country {
+  width: 25%;
+  flex: 1 1 25%;
+  max-width: 250px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  margin-bottom: 30px;
+  height: 100%;
+
+  .country-link {
+    text-decoration: none;
+
+    .country-poster {
+      height: 200px;
+
+      img {
+        display: block;
+        margin: 0 auto;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .country-details {
+      background: hsl(209, 23%, 22%);
+      color: hsl(0, 0%, 100%);
+      padding: 30px 20px;
+
+      h6 {
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      p {
+        margin-bottom: 8px;
+        color: hsl(0, 0%, 52%);
+        font-weight: 600;
+
+        span {
+          color: hsl(0, 0%, 100%);
+        }
+      }
+    }
+  }
+}
+
+.home.light {
+  .country-details {
+    background: hsl(0, 0%, 98%);
+    color: hsl(200, 15%, 8%);
     padding: 30px 20px;
+
+    p {
+      margin-bottom: 8px;
+      color: hsl(0, 0%, 52%);
+      font-weight: 600;
+
+      span {
+        color: hsl(200, 15%, 8%);
+      }
+    }
   }
 }
 </style>

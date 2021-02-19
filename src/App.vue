@@ -1,6 +1,6 @@
 <template>
   <header :class="{ light: !reactive.darkMode }">
-    <h6>Where in the world?</h6>
+   <router-link :to="{ name: 'Home' }">Where in the world?</router-link>
     <button class="theme-switcher" @click="toggleDarkMode">
       <i class="bx bx-moon" :class="{ 'bxs-moon': reactive.darkMode }"></i>
       {{ reactive.darkMode ? "Dark Mode" : "Light Mode" }}
@@ -58,9 +58,10 @@ header {
   border-bottom: 1px solid rgba(0, 0, 0, 0);
   transition: all 0.5s ease-in-out;
 
-  h6 {
+  a {
     color: #fff;
     font-size: 18px;
+    text-decoration: none;
   }
 
   button {
@@ -87,7 +88,7 @@ header {
     border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 
     button,
-    h6 {
+    a {
       color: hsl(200, 15%, 8%);
     }
   }
