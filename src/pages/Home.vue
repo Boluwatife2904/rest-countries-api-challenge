@@ -1,18 +1,20 @@
 <template>
   <div class="home" :class="{ light: !reactive.darkMode }">
     <div class="input-and-filter">
-      <form @submit.prevent="search">
+      <form @submit.prevent="">
         <div class="input-field">
           <input
-            type="search"
-            v-model="country"
+            type="text"
+            v-model.trim="country"
+            @input="searchByName"
             placeholder="Search for a Country"
           />
           <i class="bx bx-search search-icon"></i>
         </div>
       </form>
       <div class="filter-box">
-        <select name="" id="">
+        <select v-model="filter">
+          <option value="All">Filter by Region</option>
           <option value="Africa">Africa</option>
           <option value="America">America</option>
           <option value="Asia">Asia</option>
@@ -23,38 +25,66 @@
       </div>
     </div>
 
-    <div class="countries-list">
-      <div class="country" v-for="country in countriesList" :key="country.name">
-        <router-link
-          :to="{ name: 'CountryInfo', params: { id: country.name } }"
-          class="country-link"
-        >
-          <div class="country-poster">
-            <img :src="country.flag" :alt="country.name" />
-          </div>
-          <div class="country-details">
-            <h6>{{ country.name }}</h6>
-            <p><span>Population:</span> {{ country.population }}</p>
-            <p><span>Region:</span> {{ country.region }}</p>
-            <p><span>Capital:</span> {{ country.capital }}</p>
-          </div>
-        </router-link>
-      </div>
+    <div class="loading-list" v-if="loading">
+      <skeleton-loader v-for="i in 12" :key="i"></skeleton-loader>
+    </div>
+
+    <div class="countries-list" v-else>
+      <country-item
+        v-for="country in filteredByRegion"
+        :key="country.name"
+        :country="country"
+      ></country-item>
     </div>
   </div>
 </template>
 
 <script>
+import SkeletonLoader from "../components/SkeletonLoader";
+import CountryItem from "../components/CountryItem.vue";
+
 export default {
+  components: { CountryItem, SkeletonLoader },
   inject: ["reactive"],
   name: "Home",
   data() {
     return {
+      loading: true,
       country: "",
+      filter: "All",
       countriesList: null,
     };
   },
+  computed: {
+    filteredByRegion() {
+      if (this.filter === "All") {
+        return this.countriesList;
+      } else if (this.filter === "Africa") {
+        return this.countriesList.filter(
+          (country) => country.region === "Africa"
+        );
+      } else if (this.filter === "America") {
+        return this.countriesList.filter(
+          (country) => country.region === "Americas"
+        );
+      } else if (this.filter === "Asia") {
+        return this.countriesList.filter(
+          (country) => country.region === "Asia"
+        );
+      } else if (this.filter === "Europe") {
+        return this.countriesList.filter(
+          (country) => country.region === "Europe"
+        );
+      } else if (this.filter === "Oceanic") {
+        return this.countriesList.filter(
+          (country) => country.region === "Oceania"
+        );
+      }
+      return this.countriesList;
+    },
+  },
   mounted() {
+    this.loading = true;
     fetch(`https://restcountries.eu/rest/v2/all`)
       .then((response) => {
         if (response.ok) {
@@ -63,16 +93,31 @@ export default {
       })
       .then((data) => {
         this.countriesList = data;
-        console.log(data);
+        setTimeout(() => {
+          this.loading = false;
+        }, 1500)
       });
+  },
+  methods: {
+    searchByName(e) {
+      if (e.target.value !== "") {
+        console.log(this.filteredByRegion);
+        this.filteredByRegion.filter((country) =>
+          country.name.includes(e.target.value)
+        );
+      }
+      return this.filteredByRegion;
+      // console.log(this.countriesList);
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .home {
   background: hsl(207, 26%, 17%);
   padding: 50px 60px 50px;
+  min-height: 100vh;
   transition: all 0.5s ease-in-out;
 
   .input-and-filter {
@@ -157,6 +202,18 @@ export default {
     }
   }
 
+  .loading-list,
+  .countries-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media screen and (max-width: 868px) {
+      justify-content: space-around;
+    }
+  }
+
   &.light {
     background: hsl(0, 0%, 98%);
 
@@ -189,83 +246,32 @@ export default {
         }
       }
     }
-  }
 
-  @media screen and (max-width: 768px) {
-    padding: 30px 20px 50px;
-  }
-}
+    .countries-list {
+      .country {
+        .country-link {
+          .country-details {
+            background: hsl(0, 0%, 98%);
+            color: hsl(200, 15%, 8%);
+            padding: 30px 20px;
 
-.countries-list {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-}
+            p {
+              margin-bottom: 8px;
+              color: hsl(0, 0%, 52%);
+              font-weight: 600;
 
-.country {
-  width: 25%;
-  flex: 1 1 25%;
-  max-width: 250px;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
-  margin-bottom: 30px;
-  height: 100%;
-
-  .country-link {
-    text-decoration: none;
-
-    .country-poster {
-      height: 200px;
-
-      img {
-        display: block;
-        margin: 0 auto;
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-      }
-    }
-
-    .country-details {
-      background: hsl(209, 23%, 22%);
-      color: hsl(0, 0%, 100%);
-      padding: 30px 20px;
-
-      h6 {
-        font-size: 22px;
-        margin-bottom: 10px;
-      }
-
-      p {
-        margin-bottom: 8px;
-        color: hsl(0, 0%, 52%);
-        font-weight: 600;
-
-        span {
-          color: hsl(0, 0%, 100%);
+              span {
+                color: hsl(200, 15%, 8%);
+              }
+            }
+          }
         }
       }
     }
   }
-}
 
-.home.light {
-  .country-details {
-    background: hsl(0, 0%, 98%);
-    color: hsl(200, 15%, 8%);
-    padding: 30px 20px;
-
-    p {
-      margin-bottom: 8px;
-      color: hsl(0, 0%, 52%);
-      font-weight: 600;
-
-      span {
-        color: hsl(200, 15%, 8%);
-      }
-    }
+  @media screen and (max-width: 768px) {
+    padding: 30px 20px 50px;
   }
 }
 </style>
