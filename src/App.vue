@@ -61,7 +61,7 @@ header {
   padding: 25px 60px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid rgba(0, 0, 0, 0);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s;
 
   a {
     color: #fff;

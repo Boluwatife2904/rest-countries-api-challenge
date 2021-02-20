@@ -27,6 +27,7 @@ export default {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
   margin-bottom: 30px;
   height: 100%;
+  transition: all 0.3s;
 
   &::before {
     content: "";
@@ -42,6 +43,7 @@ export default {
       rgb(211, 209, 211) 50%,
       transparent 100%
     );
+    transition: all 0.3s;
     animation: shimmer 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
@@ -49,17 +51,20 @@ export default {
     height: 200px;
     width: 100%;
     background-color: rgb(220, 220, 220);
+    transition: all 0.3s;
   }
 
   .country-details {
     background: none;
     padding: 30px 20px;
+    transition: all 0.3s;
 
     h6 {
       height: 22px;
       margin-bottom: 10px;
       width: 100%;
       background-color: rgb(220, 220, 220);
+      transition: all 0.3s;
     }
 
     p {
@@ -67,6 +72,7 @@ export default {
       height: 16px;
       color: hsl(0, 0%, 52%);
       background-color: rgb(220, 220, 220);
+      transition: all 0.3s;
 
       &:nth-child(2) {
         width: 180px;
@@ -81,13 +87,13 @@ export default {
   }
 
   &.dark {
-    &::before{
+    &::before {
       background: linear-gradient(
-      90deg,
-      transparent 0%,
-    hsl(209, 23%, 22%) 50%,
-      transparent 100%
-    );
+        90deg,
+        transparent 0%,
+        hsl(209, 23%, 22%) 50%,
+        transparent 100%
+      );
     }
 
     .country-poster {

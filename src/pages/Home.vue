@@ -118,7 +118,7 @@ export default {
   background: hsl(207, 26%, 17%);
   padding: 50px 60px 50px;
   min-height: 100vh;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s;
 
   .input-and-filter {
     display: flex;
@@ -142,7 +142,7 @@ export default {
           font: inherit;
           padding: 0 20px 0 60px;
           box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
-          transition: all 0.3s ease-in-out;
+          transition: all 0.3s;
 
           &::placeholder {
             color: hsl(0, 0%, 100%);
@@ -155,6 +155,7 @@ export default {
           top: 14px;
           color: hsl(0, 0%, 100%);
           font-size: 22px;
+  transition: all 0.3s;
         }
       }
 
@@ -182,7 +183,7 @@ export default {
         color: hsl(0, 0%, 100%);
         font: inherit;
         cursor: pointer;
-        transition: all 0.3s ease-in-out;
+        transition: all 0.3s;
 
         option {
           font: inherit;
