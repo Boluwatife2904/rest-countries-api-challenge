@@ -33,6 +33,7 @@
       <country-item
         v-for="country in filteredByRegion"
         :key="country.name"
+        :name="country.name"
         :country="country"
       ></country-item>
     </div>

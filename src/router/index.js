@@ -9,7 +9,7 @@ const routes = [
     component: Home
   },
   {
-    path: '/country/:id',
+    path: '/country/:name',
     name: 'CountryInfo',
     component: CountryInfo,
     props: true
