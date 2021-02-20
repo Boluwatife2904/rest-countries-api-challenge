@@ -95,16 +95,16 @@ export default {
         this.countriesList = data;
         setTimeout(() => {
           this.loading = false;
-        }, 1500)
+        }, 1500);
       });
   },
   methods: {
     searchByName(e) {
       if (e.target.value !== "") {
         console.log(this.filteredByRegion);
-        this.filteredByRegion.filter((country) =>
-          country.name.includes(e.target.value)
-        );
+        this.filteredByRegion.filter((country) => {
+          country.name.toLowerCase().includes(e.target.value.toLowerCase());
+        });
       }
       return this.filteredByRegion;
       // console.log(this.countriesList);
@@ -118,7 +118,7 @@ export default {
   background: hsl(207, 26%, 17%);
   padding: 50px 60px 50px;
   min-height: 100vh;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.3s ease-in-out;
 
   .input-and-filter {
     display: flex;
@@ -142,6 +142,7 @@ export default {
           font: inherit;
           padding: 0 20px 0 60px;
           box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+          transition: all 0.3s ease-in-out;
 
           &::placeholder {
             color: hsl(0, 0%, 100%);
@@ -181,6 +182,7 @@ export default {
         color: hsl(0, 0%, 100%);
         font: inherit;
         cursor: pointer;
+        transition: all 0.3s ease-in-out;
 
         option {
           font: inherit;
