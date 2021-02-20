@@ -1,6 +1,6 @@
 <template>
   <div class="about" :class="{ light: !reactive.darkMode }">
-    <button class="go-back"><i class="bx bx-arrow-back"></i> Back</button>
+    <button class="go-back" @click="goBack"><i class="bx bx-arrow-back"></i> Back</button>
     <div class="country-information">
       <div class="country-poster">
         <img :src="country.flag" :alt="country.name" />
@@ -9,12 +9,12 @@
         <h3 class="name">{{ country.name }}</h3>
 
         <div class="other-info">
-          <div class="column column-one">
+          <div class="column">
             <h6>
               Native name: <span> {{ country.nativeName }} </span>
             </h6>
             <h6>
-              Population: <span> {{ country.population }} </span>
+              Population: <span> {{ Number(country.population).toLocaleString() }} </span>
             </h6>
             <h6>
               Region: <span> {{ country.region }} </span>
@@ -26,9 +26,12 @@
               Capital: <span> {{ country.capital }} </span>
             </h6>
           </div>
-          <div class="column column-two">
+          <div class="column">
             <h6>
-              Top level domain: <span v-for="(tld, index) in country.topLevelDomain" :key="index"> {{ tld }} </span>
+              Top level domain:
+              <span v-for="(tld, index) in country.topLevelDomain" :key="index">
+                {{ tld }},
+              </span>
             </h6>
             <h6>
               Currencies:
@@ -36,13 +39,29 @@
                 v-for="(currency, index) in country.currencies"
                 :key="index"
               >
-                {{ currency.name }}</span
+                {{ currency.name }}, </span
               >
             </h6>
             <h6>
-              Languages: <span v-for="(language, index) in country.languages" :key="index"> {{ language.name }}, </span>
+              Languages:
+              <span v-for="(language, index) in country.languages" :key="index">
+                {{ language.name }},
+              </span>
             </h6>
           </div>
+        </div>
+
+        <div class="border">
+          <h6>
+            Border Countries:
+            <span v-for="(border, index) in country.borders" :key="index">
+              <router-link
+                :to="{ name: CountryInfo, params: { name: border } }"
+              >
+                {{ border }}
+              </router-link></span
+            >
+          </h6>
         </div>
       </div>
     </div>
@@ -52,25 +71,38 @@
 <script>
 export default {
   props: ["name"],
+  watch: {
+    name() {
+      this.fetchCountry();
+    },
+  },
   inject: ["reactive"],
   data() {
     return {
       country: [],
     };
   },
+  methods: {
+    fetchCountry() {
+      fetch(`https://restcountries.eu/rest/v2/name/${this.name}`)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (data.length > 0) {
+            console.log(data);
+            this.country = data[0];
+          }
+        });
+    },
+    goBack(){
+      this.$router.go(-1);
+    }
+  },
   mounted() {
-    fetch(`https://restcountries.eu/rest/v2/name/${this.name}`)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((data) => {
-        if (data.length > 0) {
-          console.log(data);
-          this.country = data[0];
-        }
-      });
+    this.fetchCountry();
   },
 };
 </script>
@@ -87,7 +119,7 @@ export default {
     align-items: center;
     outline: none;
     border: none;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     width: 140px;
     height: 42px;
     border-radius: 5px;
@@ -132,7 +164,7 @@ export default {
 
       .name {
         color: #fff;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
         font-size: 24px;
       }
 
@@ -152,6 +184,31 @@ export default {
             span {
               color: hsl(0, 0%, 52%);
             }
+          }
+        }
+      }
+    }
+
+    .border {
+      margin-top: 40px;
+
+      h6 {
+        color: #fff;
+        font-size: 16px;
+        margin-right: 10px;
+        font-weight: 500;
+
+        span {
+          a {
+            display: inline-block;
+            padding: 5px 30px;
+            margin: 10px;
+            box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            color: #fff;
+            text-transform: capitalize;
+            font: inherit;
+            font-size: 14px;
           }
         }
       }
