@@ -146,6 +146,7 @@ export default {
 
           &::placeholder {
             color: hsl(0, 0%, 100%);
+            transition: all 0.3s;
           }
         }
 
@@ -155,7 +156,7 @@ export default {
           top: 14px;
           color: hsl(0, 0%, 100%);
           font-size: 22px;
-  transition: all 0.3s;
+          transition: all 0.3s;
         }
       }
 

@@ -69,6 +69,7 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        transition: all 0.3s;
       }
 
       p {
