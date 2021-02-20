@@ -56,7 +56,7 @@
             Border Countries:
             <span v-for="(border, index) in country.borders" :key="index">
               <router-link
-                :to="{ name: CountryInfo, params: { name: border } }"
+                :to="'/country/' + border"
               >
                 {{ border }}
               </router-link></span
@@ -72,8 +72,8 @@
 export default {
   props: ["name"],
   watch: {
-    name() {
-      this.fetchCountry();
+    name(newValue) {
+      this.fetchCountry(newValue);
     },
   },
   inject: ["reactive"],
@@ -83,15 +83,15 @@ export default {
     };
   },
   methods: {
-    fetchCountry() {
-      fetch(`https://restcountries.eu/rest/v2/name/${this.name}`)
+    fetchCountry(name) {
+      fetch(`https://restcountries.eu/rest/v2/name/${name}`)
         .then((response) => {
           if (response.ok) {
             return response.json();
           }
         })
         .then((data) => {
-          if (data.length > 0) {
+          if (data && data.length > 0) {
             console.log(data);
             this.country = data[0];
           }
@@ -102,7 +102,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchCountry();
+    this.fetchCountry(this.name);
   },
 };
 </script>
