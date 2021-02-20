@@ -1,5 +1,5 @@
 <template>
-  <div class="country">
+  <div class="country" :class="{ dark: reactive.darkMode }">
     <div class="country-poster"></div>
     <div class="country-details">
       <h6></h6>
@@ -9,6 +9,12 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  inject: ["reactive"],
+};
+</script>
 
 <style lang="scss" scoped>
 .country {
@@ -46,7 +52,7 @@
   }
 
   .country-details {
-    background: hsl(0, 0%, 100%);
+    background: none;
     padding: 30px 20px;
 
     h6 {
@@ -68,8 +74,35 @@
       &:nth-child(3) {
         width: 150px;
       }
-       &:nth-child(4) {
+      &:nth-child(4) {
         width: 120px;
+      }
+    }
+  }
+
+  &.dark {
+    &::before{
+      background: linear-gradient(
+      90deg,
+      transparent 0%,
+    hsl(209, 23%, 22%) 50%,
+      transparent 100%
+    );
+    }
+
+    .country-poster {
+      background: hsl(209, 23%, 22%);
+    }
+
+    .country-details {
+      background: none;
+
+      h6 {
+        background-color: hsl(209, 23%, 22%);
+      }
+
+      p {
+        background-color: hsl(209, 23%, 22%);
       }
     }
   }
