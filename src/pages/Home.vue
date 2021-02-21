@@ -39,7 +39,7 @@
       <country-item
         v-for="country in filteredByRegion"
         :key="country.name"
-        :name="country.name"
+        :name="country.alpha3Code"
         :country="country"
       ></country-item>
     </div>

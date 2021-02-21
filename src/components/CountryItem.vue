@@ -1,7 +1,7 @@
 <template>
   <div class="country">
     <router-link
-      :to="{ name: 'CountryInfo', params: { name: country.name } }"
+      :to="{ name: 'CountryInfo', params: { name: country.alpha3Code } }"
       class="country-link"
     >
       <div class="country-poster">

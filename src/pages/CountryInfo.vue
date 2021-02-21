@@ -85,16 +85,17 @@ export default {
   },
   methods: {
     fetchCountry(name) {
-      fetch(`https://restcountries.eu/rest/v2/name/${name}`)
+      fetch(`https://restcountries.eu/rest/v2/alpha/${name}`)
         .then((response) => {
           if (response.ok) {
             return response.json();
           }
         })
         .then((data) => {
-          if (data && data.length > 0) {
-            console.log(data);
-            this.country = data[0];
+          if (data) {
+            this.country = data;
+          } else{
+            console.log("Country not found");
           }
         });
     },
@@ -217,7 +218,7 @@ export default {
           margin-right: 10px;
           font-weight: 500;
           width: 150px;
-
+          flex-shrink: 0;
 
           @media screen and (max-width: 992px) {
             margin-bottom: 10px;
