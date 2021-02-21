@@ -270,7 +270,7 @@ export default {
     }
 
     p {
-      color: #fff;
+      color: hsl(0, 0%, 100%);
       font-size: 18px;
       line-height: 30px;
       margin-bottom: 15px;
@@ -290,7 +290,7 @@ export default {
     button {
       font: inherit;
       background-color: hsl(207, 26%, 17%);
-      color: #fff;
+      color: hsl(0, 0%, 100%);
       outline: none;
       border: none;
       cursor: pointer;

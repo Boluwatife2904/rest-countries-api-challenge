@@ -1,6 +1,8 @@
 <template>
   <div class="about" :class="{ light: !reactive.darkMode }">
-    <button class="go-back" @click="goBack"><i class="bx bx-arrow-back"></i> Back</button>
+    <button class="go-back" @click="goBack">
+      <i class="bx bx-arrow-back"></i> Back
+    </button>
     <div class="country-information">
       <div class="country-poster">
         <img :src="country.flag" :alt="country.name" />
@@ -14,7 +16,8 @@
               Native name: <span> {{ country.nativeName }} </span>
             </h6>
             <h6>
-              Population: <span> {{ Number(country.population).toLocaleString() }} </span>
+              Population:
+              <span> {{ Number(country.population).toLocaleString() }} </span>
             </h6>
             <h6>
               Region: <span> {{ country.region }} </span>
@@ -39,8 +42,8 @@
                 v-for="(currency, index) in country.currencies"
                 :key="index"
               >
-                {{ currency.name }}, </span
-              >
+                {{ currency.name }},
+              </span>
             </h6>
             <h6>
               Languages:
@@ -55,9 +58,7 @@
           <h6>
             Border Countries:
             <span v-for="(border, index) in country.borders" :key="index">
-              <router-link
-                :to="'/country/' + border"
-              >
+              <router-link :to="'/country/' + border">
                 {{ border }}
               </router-link></span
             >
@@ -97,9 +98,9 @@ export default {
           }
         });
     },
-    goBack(){
+    goBack() {
       this.$router.go(-1);
-    }
+    },
   },
   mounted() {
     this.fetchCountry(this.name);
@@ -163,7 +164,7 @@ export default {
       flex: 1 1 40%;
 
       .name {
-        color: #fff;
+        color: hsl(0, 0%, 100%);
         margin-bottom: 30px;
         font-size: 24px;
       }
@@ -193,7 +194,7 @@ export default {
       margin-top: 40px;
 
       h6 {
-        color: #fff;
+        color: hsl(0, 0%, 100%);
         font-size: 16px;
         margin-right: 10px;
         font-weight: 500;
@@ -203,9 +204,9 @@ export default {
             display: inline-block;
             padding: 5px 30px;
             margin: 10px;
-            box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             text-decoration: none;
-            color: #fff;
+            color: hsl(0, 0%, 100%);
             text-transform: capitalize;
             font: inherit;
             font-size: 14px;
@@ -217,6 +218,44 @@ export default {
 
   &.light {
     background: hsl(0, 0%, 98%);
+
+    .go-back {
+      color: hsl(200, 15%, 8%);
+    }
+
+    .country-information {
+      .country-info {
+        .name {
+          color: hsl(200, 15%, 8%);
+        }
+
+        .other-info {
+          .column {
+            h6 {
+              color: hsl(200, 15%, 8%);
+
+              span {
+                color: hsl(207, 26%, 17%);
+              }
+            }
+          }
+        }
+      }
+
+      .border {
+        margin-top: 40px;
+
+        h6 {
+          color: hsl(200, 15%, 8%);
+
+          span {
+            a {
+              color: hsl(207, 26%, 17%);
+            }
+          }
+        }
+      }
+    }
   }
 }
 </style>
