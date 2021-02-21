@@ -11,7 +11,7 @@
         <h3 class="name">{{ country.name }}</h3>
 
         <div class="other-info">
-          <div class="column">
+          <div class="column column-one">
             <h6>
               Native name: <span> {{ country.nativeName }} </span>
             </h6>
@@ -29,7 +29,7 @@
               Capital: <span> {{ country.capital }} </span>
             </h6>
           </div>
-          <div class="column">
+          <div class="column column-two">
             <h6>
               Top level domain:
               <span v-for="(tld, index) in country.topLevelDomain" :key="index">
@@ -55,14 +55,14 @@
         </div>
 
         <div class="border">
-          <h6>
-            Border Countries:
+          <h6>Border Countries:</h6>
+          <div class="countries">
             <span v-for="(border, index) in country.borders" :key="index">
               <router-link :to="'/country/' + border">
                 {{ border }}
               </router-link></span
             >
-          </h6>
+          </div>
         </div>
       </div>
     </div>
@@ -157,6 +157,12 @@ export default {
         margin: 0 auto;
         object-fit: cover;
       }
+
+      @media screen and (max-width: 768px) {
+        width: 100%;
+        margin-right: 0;
+        flex: 1 1 100%;
+      }
     }
 
     .country-info {
@@ -171,10 +177,16 @@ export default {
 
       .other-info {
         display: flex;
+        flex-wrap: wrap;
 
         .column {
           width: 50%;
           flex: 1 1 50%;
+
+          @media screen and (max-width: 600px) {
+            width: 100%;
+            flex: 1 1 100%;
+          }
 
           h6 {
             font-size: 16px;
@@ -187,32 +199,61 @@ export default {
             }
           }
         }
-      }
-    }
 
-    .border {
-      margin-top: 40px;
-
-      h6 {
-        color: hsl(0, 0%, 100%);
-        font-size: 16px;
-        margin-right: 10px;
-        font-weight: 500;
-
-        span {
-          a {
-            display: inline-block;
-            padding: 5px 30px;
-            margin: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            text-decoration: none;
-            color: hsl(0, 0%, 100%);
-            text-transform: capitalize;
-            font: inherit;
-            font-size: 14px;
+        .column-one {
+          @media screen and (max-width: 600px) {
+            margin-bottom: 30px;
           }
         }
       }
+
+      .border {
+        margin-top: 40px;
+        display: flex;
+
+        h6 {
+          color: hsl(0, 0%, 100%);
+          font-size: 16px;
+          margin-right: 10px;
+          font-weight: 500;
+          width: 150px;
+
+
+          @media screen and (max-width: 992px) {
+            margin-bottom: 10px;
+          }
+        }
+
+        .countries {
+          span {
+            a {
+              display: inline-block;
+              padding: 5px 30px;
+              margin: 0 20px 15px 0;
+              box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12);
+              text-decoration: none;
+              color: hsl(0, 0%, 100%);
+              text-transform: capitalize;
+              font: inherit;
+              font-size: 14px;
+            }
+          }
+        }
+
+        @media screen and (max-width: 992px) {
+          flex-direction: column;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        width: 100%;
+        flex: 1 1 100%;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 
@@ -247,7 +288,8 @@ export default {
 
         h6 {
           color: hsl(200, 15%, 8%);
-
+        }
+        .countries {
           span {
             a {
               color: hsl(207, 26%, 17%);
@@ -256,6 +298,10 @@ export default {
         }
       }
     }
+  }
+
+  @media screen and (max-width: 768px) {
+    padding: 30px 20px 50px;
   }
 }
 </style>
