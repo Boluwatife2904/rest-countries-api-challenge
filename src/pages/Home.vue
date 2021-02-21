@@ -1,6 +1,9 @@
 <template>
   <div class="home" :class="{ light: !reactive.darkMode }">
-    <div class="input-and-filter">
+    <div
+      class="input-and-filter"
+      v-if="!loading && filteredByRegion && filteredByRegion.length > 0"
+    >
       <form @submit.prevent="">
         <div class="input-field">
           <input
@@ -29,13 +32,26 @@
       <skeleton-loader v-for="i in 12" :key="i"></skeleton-loader>
     </div>
 
-    <div class="countries-list" v-else>
+    <div
+      class="countries-list"
+      v-if="!loading && filteredByRegion && filteredByRegion.length > 0"
+    >
       <country-item
         v-for="country in filteredByRegion"
         :key="country.name"
         :name="country.name"
         :country="country"
       ></country-item>
+    </div>
+
+    <div class="error-box" v-if="!loading && error">
+      <span>&#x1F615; </span>
+      <p>
+        Sorry but there has been an error, and we are currently unable to
+        provide you with information you are currently looking for now due to
+        some technical reasons.
+      </p>
+      <button @click="hideError">Try Again</button>
     </div>
   </div>
 </template>
@@ -51,6 +67,7 @@ export default {
   data() {
     return {
       loading: true,
+      error: false,
       country: "",
       filter: "All",
       countriesList: null,
@@ -85,19 +102,7 @@ export default {
     },
   },
   mounted() {
-    this.loading = true;
-    fetch(`https://restcountries.eu/rest/v2/all`)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((data) => {
-        this.countriesList = data;
-        setTimeout(() => {
-          this.loading = false;
-        }, 1500);
-      });
+    this.fetchCountries();
   },
   methods: {
     searchByName(e) {
@@ -109,6 +114,32 @@ export default {
       }
       return this.filteredByRegion;
       // console.log(this.countriesList);
+    },
+    hideError() {
+      this.error = false;
+      this.fetchCountries();
+    },
+    fetchCountries() {
+      this.loading = true;
+      fetch(`https://restcountries.eu/rest/v2/all`)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          this.countriesList = data;
+          setTimeout(() => {
+            this.loading = false;
+          }, 1500);
+        })
+        .catch((error) => {
+          console.log(error);
+          setTimeout(() => {
+            this.loading = false;
+          }, 2000)
+          this.error = true;
+        });
     },
   },
 };
@@ -219,6 +250,61 @@ export default {
     }
   }
 
+  .error-box {
+    background: hsl(209, 23%, 22%);
+    padding: 40px;
+    text-align: center;
+    width: 85%;
+    margin: 65px auto 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+
+    @media screen and (max-width: 768px) {
+      width: 95%;
+    }
+
+    span {
+      font-size: 50px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #fff;
+      font-size: 18px;
+      line-height: 30px;
+      margin-bottom: 15px;
+      width: 60%;
+      margin-left: auto;
+      margin-right: auto;
+
+      @media screen and (max-width: 768px) {
+        width: 80%;
+      }
+
+      @media screen and (max-width: 576px) {
+        width: 100%;
+      }
+    }
+
+    button {
+      font: inherit;
+      background-color: hsl(207, 26%, 17%);
+      color: #fff;
+      outline: none;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 14px 16px;
+      text-transform: uppercase;
+      transition: 0.4s;
+      width: 150px;
+      font-family: "Nunito Sans", sans-serif;
+      font-weight: 600;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.12);
+    }
+  }
+
   &.light {
     background: hsl(0, 0%, 98%);
 
@@ -271,6 +357,19 @@ export default {
             }
           }
         }
+      }
+    }
+
+    .error-box {
+      background: hsl(0, 0%, 98%);
+
+      p {
+        color: hsl(200, 15%, 8%);
+      }
+
+      button {
+        background: hsl(0, 0%, 98%);
+        color: hsl(200, 15%, 8%);
       }
     }
   }
