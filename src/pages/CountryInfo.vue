@@ -80,7 +80,7 @@ export default {
   inject: ["reactive"],
   data() {
     return {
-      country: [],
+      country: {},
     };
   },
   methods: {
@@ -94,7 +94,7 @@ export default {
         .then((data) => {
           if (data) {
             this.country = data;
-          } else{
+          } else {
             console.log("Country not found");
           }
         });
@@ -157,6 +157,10 @@ export default {
         display: block;
         margin: 0 auto;
         object-fit: cover;
+
+        @media screen and (max-width: 768px) {
+          height: 300px;
+        }
       }
 
       @media screen and (max-width: 768px) {
