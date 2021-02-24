@@ -1,5 +1,5 @@
 <template>
-  <div class="country" :class="{ dark: reactive.darkMode }">
+  <div class="country" :class="{ dark: darkMode }">
     <div class="country-poster"></div>
     <div class="country-details">
       <h6></h6>
@@ -11,8 +11,12 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-  inject: ["reactive"],
+  computed: {
+    ...mapGetters(["darkMode"])
+  }
 };
 </script>
 

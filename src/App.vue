@@ -1,9 +1,9 @@
 <template>
-  <header :class="{ light: !reactive.darkMode }">
+  <header :class="{ light: !darkMode }">
    <router-link :to="{ name: 'Home' }">Where in the world?</router-link>
-    <button class="theme-switcher" @click="toggleDarkMode">
-      <i class="bx bx-moon" :class="{ 'bxs-moon': reactive.darkMode }"></i>
-      {{ reactive.darkMode ? "Dark Mode" : "Light Mode" }}
+    <button class="theme-switcher" @click="toggle">
+      <i class="bx bx-moon" :class="{ 'bxs-moon': darkMode }"></i>
+      {{ darkMode ? "Dark Mode" : "Light Mode" }}
     </button>
   </header>
   <router-view />
@@ -11,29 +11,17 @@
 
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-  provide() {
-    return {
-      reactive: this.reactive,
-    };
-  },
-  data() {
-    return {
-      reactive: {
-        darkMode: true,
-      },
-    };
+  computed: {
+    ...mapGetters(["darkMode"]),
   },
   methods: {
-    toggleDarkMode() {
-      this.reactive.darkMode = !this.reactive.darkMode;
-      localStorage.setItem("reactive", JSON.stringify(this.reactive));
+    toggle() {
+      this.$store.commit("toggle")
     },
   },
-  created() {
-    const dark = JSON.parse(localStorage.getItem("reactive"));
-    this.reactive.darkMode = dark.darkMode;
-  }
 };
 </script>
 

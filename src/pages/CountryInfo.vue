@@ -1,5 +1,5 @@
 <template>
-  <div class="about" :class="{ light: !reactive.darkMode }">
+  <div class="about" :class="{ light: !darkMode }">
     <button class="go-back" @click="goBack">
       <i class="bx bx-arrow-back"></i> Back
     </button>
@@ -70,6 +70,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   props: ["name"],
   watch: {
@@ -77,11 +79,13 @@ export default {
       this.fetchCountry(newValue);
     },
   },
-  inject: ["reactive"],
   data() {
     return {
       country: {},
     };
+  },
+  computed: {
+    ...mapGetters(["darkMode"])
   },
   methods: {
     fetchCountry(name) {

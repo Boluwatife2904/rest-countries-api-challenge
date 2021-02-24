@@ -1,5 +1,5 @@
 <template>
-  <div class="home" :class="{ light: !reactive.darkMode }">
+  <div class="home" :class="{ light: !darkMode }">
     <div
       class="input-and-filter"
       v-if="!loading && filteredByRegion && filteredByRegion.length > 0"
@@ -59,10 +59,10 @@
 <script>
 import SkeletonLoader from "../components/SkeletonLoader";
 import CountryItem from "../components/CountryItem.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: { CountryItem, SkeletonLoader },
-  inject: ["reactive"],
   name: "Home",
   data() {
     return {
@@ -100,6 +100,7 @@ export default {
       }
       return this.countriesList;
     },
+    ...mapGetters(["darkMode"]),
   },
   mounted() {
     this.fetchCountries();
@@ -113,7 +114,6 @@ export default {
         });
       }
       return this.filteredByRegion;
-      // console.log(this.countriesList);
     },
     hideError() {
       this.error = false;
@@ -137,7 +137,7 @@ export default {
           console.log(error);
           setTimeout(() => {
             this.loading = false;
-          }, 2000)
+          }, 2000);
           this.error = true;
         });
     },
