@@ -2,14 +2,13 @@
   <div class="home" :class="{ light: !darkMode }">
     <div
       class="input-and-filter"
-      v-if="!loading && filteredByRegion && filteredByRegion.length > 0"
+      v-if="!loading"
     >
       <form @submit.prevent="">
         <div class="input-field">
           <input
             type="text"
             v-model.trim="country"
-            @input="searchByName"
             placeholder="Search for a Country"
           />
           <i class="bx bx-search search-icon"></i>
@@ -44,6 +43,13 @@
       ></country-item>
     </div>
 
+    <div class="empty-box" v-if="!loading && filteredByRegion.length <= 0">
+      <span>&#x1F615; </span>
+      <p>
+        Sorry but we could not find any country that matches your search parameters. Please check again to ensure that the country you are looking for truly exists.
+      </p>
+    </div>
+
     <div class="error-box" v-if="!loading && error">
       <span>&#x1F615; </span>
       <p>
@@ -75,30 +81,38 @@ export default {
   },
   computed: {
     filteredByRegion() {
+      let countries = this.countriesList;
+
+      if (this.country && this.country !== "") {
+        return countries.filter((item) => {
+          return item.name.toLowerCase().includes(this.country.toLowerCase());
+        });
+      }
+      
       if (this.filter === "All") {
-        return this.countriesList;
+        return countries;
       } else if (this.filter === "Africa") {
-        return this.countriesList.filter(
+        return countries.filter(
           (country) => country.region === "Africa"
         );
       } else if (this.filter === "America") {
-        return this.countriesList.filter(
+        return countries.filter(
           (country) => country.region === "Americas"
         );
       } else if (this.filter === "Asia") {
-        return this.countriesList.filter(
+        return countries.filter(
           (country) => country.region === "Asia"
         );
       } else if (this.filter === "Europe") {
-        return this.countriesList.filter(
+        return countries.filter(
           (country) => country.region === "Europe"
         );
       } else if (this.filter === "Oceanic") {
-        return this.countriesList.filter(
+        return countries.filter(
           (country) => country.region === "Oceania"
         );
       }
-      return this.countriesList;
+      return countries;
     },
     ...mapGetters(["darkMode"]),
   },
@@ -106,15 +120,6 @@ export default {
     this.fetchCountries();
   },
   methods: {
-    searchByName(e) {
-      if (e.target.value !== "") {
-        console.log(this.filteredByRegion);
-        this.filteredByRegion.filter((country) => {
-          country.name.toLowerCase().includes(e.target.value.toLowerCase());
-        });
-      }
-      return this.filteredByRegion;
-    },
     hideError() {
       this.error = false;
       this.fetchCountries();
@@ -250,6 +255,7 @@ export default {
     }
   }
 
+  .empty-box,
   .error-box {
     background: hsl(209, 23%, 22%);
     padding: 40px;
