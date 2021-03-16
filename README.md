@@ -1,6 +1,6 @@
 ## Project Live Preview
 ```
-https://find-my-country-vercel.app
+[Project Live Preview](https://find-my-country-vercel.app)
 ```
 
 # Frontend Mentor - REST Countries API with color theme switcher
