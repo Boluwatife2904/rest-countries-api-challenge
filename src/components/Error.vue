@@ -3,11 +3,9 @@
     <div class="error">
       <div class="emoji"><span>&#x1F61E;</span></div>
       <div class="text">
-        <h4>400 - Bad Request</h4>
+        <h4>{{ errorCode }} - {{ errorName }}</h4>
         <p>
-          An error occured and we can't provide you with the details of the
-          country you requested for. Kindly check back later or and try again.
-          Thanks.
+          {{ errorMessage }}
         </p>
         <router-link to="/">Go Home</router-link>
       </div>
@@ -19,6 +17,7 @@
 import { mapGetters } from "vuex";
 export default {
   name: "Error",
+  props: ["errorCode", "errorName", "errorMessage"],
   computed: {
     ...mapGetters(["darkMode"]),
   },

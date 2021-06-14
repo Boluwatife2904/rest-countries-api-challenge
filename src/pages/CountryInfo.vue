@@ -72,13 +72,20 @@
       </div>
     </div>
   </div>
-  <Error v-else/>
+  <Error
+    :errorCode="400"
+    errorName="bad request"
+    errorMessage="An error occured and we can't provide you with the details of the
+          country you requested for. Kindly check back later or and try again.
+          Thanks."
+    v-else
+  />
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import Loader from "../components/Loader.vue";
-import Error from "../components/Error.vue"
+import Error from "../components/Error.vue";
 
 export default {
   name: "CountryInfo",
