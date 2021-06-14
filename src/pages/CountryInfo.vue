@@ -1,7 +1,7 @@
 <template>
   <div class="about" :class="{ light: !darkMode }">
     <button class="go-back" @click="goBack">
-      <i class="bx bx-arrow-back"></i> Back
+      <i class="bx bx-arrow-back"></i> <span>Back</span> 
     </button>
     <div class="country-information">
       <div class="country-poster">
@@ -85,23 +85,23 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["darkMode"])
+    ...mapGetters(["darkMode"]),
   },
   methods: {
-    fetchCountry(name) {
-      fetch(`https://restcountries.eu/rest/v2/alpha/${name}`)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then((data) => {
-          if (data) {
-            this.country = data;
-          } else {
-            console.log("Country not found");
-          }
-        });
+    async fetchCountry(name) {
+      try {
+        const response = await fetch(
+          `https://restcountries.eu/rest/v2/alpha/${name}`
+        );
+        const responseData = await response.json();
+        if (responseData) {
+          this.country = responseData;
+        } else {
+          console.log("Country not found");
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
     goBack() {
       this.$router.go(-1);

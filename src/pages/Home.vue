@@ -1,9 +1,6 @@
 <template>
   <div class="home" :class="{ light: !darkMode }">
-    <div
-      class="input-and-filter"
-      v-if="!loading"
-    >
+    <div class="input-and-filter" v-if="!loading">
       <form @submit.prevent="">
         <div class="input-field">
           <input
@@ -46,7 +43,9 @@
     <div class="empty-box" v-if="!loading && filteredByRegion.length <= 0">
       <span>&#x1F615; </span>
       <p>
-        Sorry but we could not find any country that matches your search parameters. Please check again to ensure that the country you are looking for truly exists.
+        Sorry but we could not find any country that matches your search
+        parameters. Please check again to ensure that the country you are
+        looking for truly exists.
       </p>
     </div>
 
@@ -88,29 +87,19 @@ export default {
           return item.name.toLowerCase().includes(this.country.toLowerCase());
         });
       }
-      
+
       if (this.filter === "All") {
         return countries;
       } else if (this.filter === "Africa") {
-        return countries.filter(
-          (country) => country.region === "Africa"
-        );
+        return countries.filter((country) => country.region === "Africa");
       } else if (this.filter === "America") {
-        return countries.filter(
-          (country) => country.region === "Americas"
-        );
+        return countries.filter((country) => country.region === "Americas");
       } else if (this.filter === "Asia") {
-        return countries.filter(
-          (country) => country.region === "Asia"
-        );
+        return countries.filter((country) => country.region === "Asia");
       } else if (this.filter === "Europe") {
-        return countries.filter(
-          (country) => country.region === "Europe"
-        );
+        return countries.filter((country) => country.region === "Europe");
       } else if (this.filter === "Oceanic") {
-        return countries.filter(
-          (country) => country.region === "Oceania"
-        );
+        return countries.filter((country) => country.region === "Oceania");
       }
       return countries;
     },
@@ -124,27 +113,18 @@ export default {
       this.error = false;
       this.fetchCountries();
     },
-    fetchCountries() {
+    async fetchCountries() {
       this.loading = true;
-      fetch(`https://restcountries.eu/rest/v2/all`)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then((data) => {
-          this.countriesList = data;
-          setTimeout(() => {
-            this.loading = false;
-          }, 1500);
-        })
-        .catch((error) => {
-          console.log(error);
-          setTimeout(() => {
-            this.loading = false;
-          }, 2000);
-          this.error = true;
-        });
+      try {
+        const response = await fetch(`https://restcountries.eu/rest/v2/all`);
+        const responseData = await response.json();
+        this.countriesList = responseData;
+        this.loading = false;
+      } catch (error) {
+        console.log(error);
+        this.loading = false;
+        this.error = true;
+      }
     },
   },
 };
