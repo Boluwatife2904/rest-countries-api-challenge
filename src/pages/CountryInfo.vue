@@ -1,7 +1,8 @@
 <template>
-  <div class="about" :class="{ light: !darkMode }">
+  <Loader v-if="isLoading" />
+  <div class="about" :class="{ light: !darkMode }" v-else>
     <button class="go-back" @click="goBack">
-      <i class="bx bx-arrow-back"></i> <span>Back</span> 
+      <i class="bx bx-arrow-back"></i> <span>Back</span>
     </button>
     <div class="country-information">
       <div class="country-poster">
@@ -71,8 +72,11 @@
 
 <script>
 import { mapGetters } from "vuex";
+import Loader from "../components/Loader.vue";
 
 export default {
+  name: "CountryInfo",
+  components: { Loader },
   props: ["name"],
   watch: {
     name(newValue) {
@@ -81,6 +85,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       country: {},
     };
   },
@@ -89,6 +94,7 @@ export default {
   },
   methods: {
     async fetchCountry(name) {
+      this.isLoading = true;
       try {
         const response = await fetch(
           `https://restcountries.eu/rest/v2/alpha/${name}`
@@ -96,10 +102,14 @@ export default {
         const responseData = await response.json();
         if (responseData) {
           this.country = responseData;
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 800);
         } else {
           console.log("Country not found");
         }
       } catch (error) {
+        this.isLoading = false;
         console.log(error);
       }
     },
