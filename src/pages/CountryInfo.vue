@@ -1,6 +1,10 @@
 <template>
   <Loader v-if="isLoading" />
-  <div class="about" :class="{ light: !darkMode }" v-else>
+  <div
+    class="about"
+    :class="{ light: !darkMode }"
+    v-else-if="!isLoading && !error"
+  >
     <button class="go-back" @click="goBack">
       <i class="bx bx-arrow-back"></i> <span>Back</span>
     </button>
@@ -68,15 +72,17 @@
       </div>
     </div>
   </div>
+  <Error v-else/>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import Loader from "../components/Loader.vue";
+import Error from "../components/Error.vue"
 
 export default {
   name: "CountryInfo",
-  components: { Loader },
+  components: { Loader, Error },
   props: ["name"],
   watch: {
     name(newValue) {
@@ -87,6 +93,7 @@ export default {
     return {
       isLoading: false,
       country: {},
+      error: false,
     };
   },
   computed: {
@@ -100,17 +107,20 @@ export default {
           `https://restcountries.eu/rest/v2/alpha/${name}`
         );
         const responseData = await response.json();
-        if (responseData) {
-          this.country = responseData;
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 800);
-        } else {
-          console.log("Country not found");
+        if (!response.ok) {
+          const error = new Error(
+            responseData.message ||
+              "Error fetching the country details from our servers."
+          );
+          throw error;
         }
-      } catch (error) {
+        this.country = responseData;
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 800);
+      } catch {
         this.isLoading = false;
-        console.log(error);
+        this.error = true;
       }
     },
     goBack() {
