@@ -24,12 +24,11 @@
       </div>
     </div>
 
-    <div class="loading-list" v-if="isLoading">
+    <flex-container v-if="isLoading">
       <skeleton-loader v-for="i in 12" :key="i"></skeleton-loader>
-    </div>
+    </flex-container>
 
-    <div
-      class="countries-list"
+    <flex-container
       v-if="!isLoading && filteredCountries && filteredCountries.length > 0"
     >
       <country-item
@@ -38,7 +37,7 @@
         :name="country.alpha3Code"
         :country="country"
       ></country-item>
-    </div>
+    </flex-container>
 
     <div class="empty-box" v-if="!isLoading && filteredCountries.length <= 0">
       <span>&#x1F615; </span>
@@ -66,9 +65,10 @@ import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import SkeletonLoader from "../components/SkeletonLoader";
 import CountryItem from "../components/CountryItem.vue";
+import FlexContainer from "../components/FlexContainer.vue"
 
 export default {
-  components: { CountryItem, SkeletonLoader },
+  components: { CountryItem, SkeletonLoader, FlexContainer },
   name: "Home",
   setup() {
     const store = useStore();
@@ -235,18 +235,6 @@ export default {
     @media screen and (max-width: 650px) {
       align-items: flex-start;
       flex-direction: column;
-    }
-  }
-
-  .loading-list,
-  .countries-list {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-
-    @media screen and (max-width: 868px) {
-      justify-content: space-around;
     }
   }
 
