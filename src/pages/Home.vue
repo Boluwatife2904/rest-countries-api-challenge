@@ -1,6 +1,6 @@
 <template>
   <div class="home" :class="{ light: !darkMode }">
-    <div class="input-and-filter" v-if="!loading">
+    <div class="input-and-filter" v-if="!isLoading">
       <form @submit.prevent="">
         <div class="input-field">
           <input
@@ -24,23 +24,23 @@
       </div>
     </div>
 
-    <div class="loading-list" v-if="loading">
+    <div class="loading-list" v-if="isLoading">
       <skeleton-loader v-for="i in 12" :key="i"></skeleton-loader>
     </div>
 
     <div
       class="countries-list"
-      v-if="!loading && filteredByRegion && filteredByRegion.length > 0"
+      v-if="!isLoading && filteredCountries && filteredCountries.length > 0"
     >
       <country-item
-        v-for="country in filteredByRegion"
+        v-for="country in filteredCountries"
         :key="country.name"
         :name="country.alpha3Code"
         :country="country"
       ></country-item>
     </div>
 
-    <div class="empty-box" v-if="!loading && filteredByRegion.length <= 0">
+    <div class="empty-box" v-if="!isLoading && filteredCountries.length <= 0">
       <span>&#x1F615; </span>
       <p>
         Sorry but we could not find any country that matches your search
@@ -49,7 +49,7 @@
       </p>
     </div>
 
-    <div class="error-box" v-if="!loading && error">
+    <div class="error-box" v-if="!isLoading && error">
       <span>&#x1F615; </span>
       <p>
         Sorry but there has been an error, and we are currently unable to
@@ -62,70 +62,85 @@
 </template>
 
 <script>
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 import SkeletonLoader from "../components/SkeletonLoader";
 import CountryItem from "../components/CountryItem.vue";
-import { mapGetters } from "vuex";
 
 export default {
   components: { CountryItem, SkeletonLoader },
   name: "Home",
-  data() {
-    return {
-      loading: true,
-      error: false,
-      country: "",
-      filter: "All",
-      countriesList: null,
-    };
-  },
-  computed: {
-    filteredByRegion() {
-      let countries = this.countriesList;
+  setup() {
+    const store = useStore();
+    // Data
+    const isLoading = ref(true);
+    const error = ref(false);
+    const country = ref("");
+    const filter = ref("All");
+    const countriesList = ref(null);
 
-      if (this.country && this.country !== "") {
-        return countries.filter((item) => {
-          return item.name.toLowerCase().includes(this.country.toLowerCase());
-        });
-      }
-
-      if (this.filter === "All") {
-        return countries;
-      } else if (this.filter === "Africa") {
-        return countries.filter((country) => country.region === "Africa");
-      } else if (this.filter === "America") {
-        return countries.filter((country) => country.region === "Americas");
-      } else if (this.filter === "Asia") {
-        return countries.filter((country) => country.region === "Asia");
-      } else if (this.filter === "Europe") {
-        return countries.filter((country) => country.region === "Europe");
-      } else if (this.filter === "Oceanic") {
-        return countries.filter((country) => country.region === "Oceania");
-      }
-      return countries;
-    },
-    ...mapGetters(["darkMode"]),
-  },
-  mounted() {
-    this.fetchCountries();
-  },
-  methods: {
-    hideError() {
-      this.error = false;
-      this.fetchCountries();
-    },
-    async fetchCountries() {
-      this.loading = true;
+    // Methods
+    const fetchCountries = async () => {
+      isLoading.value = true;
       try {
         const response = await fetch(`https://restcountries.eu/rest/v2/all`);
         const responseData = await response.json();
-        this.countriesList = responseData;
-        this.loading = false;
+        countriesList.value = responseData;
+        isLoading.value = false;
       } catch (error) {
         console.log(error);
-        this.loading = false;
-        this.error = true;
+        isLoading.value = false;
+        error.value = true;
       }
-    },
+    };
+    fetchCountries();
+
+    const hideError = () => {
+      error.value = false;
+      fetchCountries();
+    };
+
+    // Filtering Methods
+    const filterByName = (countries) => {
+      if (country.value && country.value !== "") {
+        return countries.filter((item) => {
+          return item.name.toLowerCase().includes(country.value.toLowerCase());
+        });
+      }
+      return countries;
+    };
+    const filterByRegion = (countries) => {
+      if (filter.value === "All") {
+        return countries;
+      } else if (filter.value === "Africa") {
+        return countries.filter((country) => country.region === "Africa");
+      } else if (filter.value === "America") {
+        return countries.filter((country) => country.region === "Americas");
+      } else if (filter.value === "Asia") {
+        return countries.filter((country) => country.region === "Asia");
+      } else if (filter.value === "Europe") {
+        return countries.filter((country) => country.region === "Europe");
+      } else if (filter.value === "Oceanic") {
+        return countries.filter((country) => country.region === "Oceania");
+      }
+      return countries;
+    }
+
+    // Computed Properties
+    const darkMode = computed(() => store.getters.darkMode);
+    const filteredCountries = computed(() => {
+      return filterByName(filterByRegion(countriesList.value))      
+    });
+
+    return {
+      isLoading,
+      error,
+      country,
+      filter,
+      darkMode,
+      filteredCountries,
+      hideError,
+    };
   },
 };
 </script>
