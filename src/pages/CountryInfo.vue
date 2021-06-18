@@ -83,7 +83,9 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { ref, computed, watch } from "vue";
+import { useStore } from "vuex";
+import { useRouter }  from "vue-router";
 import Loader from "../components/Loader.vue";
 import Error from "../components/Error.vue";
 
@@ -91,52 +93,55 @@ export default {
   name: "CountryInfo",
   components: { Loader, Error },
   props: ["name"],
-  watch: {
-    name(newValue) {
-      this.fetchCountry(newValue);
-    },
-  },
-  data() {
-    return {
-      isLoading: false,
-      country: {},
-      error: false,
-    };
-  },
-  computed: {
-    ...mapGetters(["darkMode"]),
-  },
-  methods: {
-    async fetchCountry(name) {
-      this.isLoading = true;
+  setup(props) {
+    const store = useStore();
+    const router = useRouter();
+    // Data
+    const isLoading = ref(false);
+    const country = ref({});
+    const error = ref(false);
+
+    // Computed
+    const darkMode = computed(() => store.getters.darkMode);
+
+    // Methods
+    const fetchCountry = async (name) => {
+      isLoading.value = true;
       try {
         const response = await fetch(
           `https://restcountries.eu/rest/v2/alpha/${name}`
         );
         const responseData = await response.json();
         if (!response.ok) {
-          const error = new Error(
+          const err = new Error(
             responseData.message ||
               "Error fetching the country details from our servers."
           );
-          throw error;
+          throw err;
         }
-        this.country = responseData;
+        country.value = responseData;
         setTimeout(() => {
-          this.isLoading = false;
+          isLoading.value = false;
         }, 800);
       } catch {
-        this.isLoading = false;
-        this.error = true;
+        isLoading.value = false;
+        error.value = true;
       }
-    },
-    goBack() {
-      this.$router.go(-1);
-    },
-  },
-  mounted() {
-    this.fetchCountry(this.name);
-  },
+    };
+
+    fetchCountry(props.name)
+
+    const goBack = () => {
+      router.go(-1);
+    }
+
+    // Watchers
+    watch(props, () => {
+      fetchCountry(props.name)
+    })
+
+    return { isLoading, country, error, darkMode, goBack };
+  }
 };
 </script>
 
